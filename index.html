@@ -1,13 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>react</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMart • Grocery Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f34e.png">
+</head>
+<body>
+    <header class="site-header">
+        <div class="topbar">
+            <div class="brand">
+                <div class="logo">🥬</div>
+                <div class="titles">
+                    <h1>FreshMart</h1>
+                    <p class="tag">Fresh. Fast. Affordable.</p>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="search-wrap">
+                    <input id="searchInput" type="search" placeholder="Search for fruits, veggies, snacks...">
+                    <button id="clearSearch" title="Clear">✕</button>
+                </div>
+                <button id="cartButton" class="cart-button" aria-label="Open cart">
+                    🛒 <span id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+        <nav class="nav-cats">
+            <div id="categories" class="chips scroll-x"></div>
+        </nav>
+    </header>
+
+    <main class="layout">
+        <aside class="sidebar">
+            <section class="panel">
+                <h2>Price</h2>
+                <div class="range">
+                    <input id="priceRange" type="range" min="0" max="1000" step="10" value="1000">
+                    <div class="range-info">
+                        Up to <span id="priceValue">₹1000</span>
+                    </div>
+                </div>
+                <div class="sort">
+                    <label for="sortSelect">Sort by</label>
+                    <select id="sortSelect">
+                        <option value="popularity">Popularity</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="name-asc">Name: A → Z</option>
+                    </select>
+                </div>
+            </section>
+            <section class="panel highlight">
+                <h2>Offers</h2>
+                <ul class="offers">
+                    <li>🔖 Get 10% off on orders over ₹1999</li>
+                    <li>🚚 Free delivery above ₹999</li>
+                    <li>🎁 Combo deals in Snacks & Beverages</li>
+                </ul>
+            </section>
+        </aside>
+
+        <section class="content">
+            <div id="productsGrid" class="products-grid"></div>
+        </section>
+    </main>
+
+    <div id="cartDrawer" class="cart-drawer" aria-hidden="true">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button id="closeCart" class="icon-btn" aria-label="Close cart">✕</button>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-footer">
+            <div class="totals">
+                <div class="row"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+                <div class="row"><span>Delivery</span><strong id="delivery">₹0</strong></div>
+                <div class="row grand"><span>Total</span><strong id="grandTotal">₹0</strong></div>
+            </div>
+            <button id="checkoutBtn" class="primary">Checkout</button>
+        </div>
+    </div>
+
+    <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+
+    <dialog id="checkoutDialog" class="checkout-dialog">
+        <form id="checkoutForm" method="dialog">
+            <header>
+                <h3>Checkout</h3>
+            </header>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="customerName">Full name</label>
+                    <input id="customerName" name="name" type="text" placeholder="e.g. Priya Sharma" required>
+                </div>
+                <div class="field">
+                    <label for="customerPhone">Phone</label>
+                    <input id="customerPhone" name="phone" type="tel" placeholder="10-digit mobile" pattern="^[0-9]{10}$" required>
+                </div>
+                <div class="field span-2">
+                    <label for="customerEmail">Email</label>
+                    <input id="customerEmail" name="email" type="email" placeholder="you@example.com" required>
+                </div>
+                <div class="field span-2">
+                    <label for="customerAddress">Delivery address</label>
+                    <textarea id="customerAddress" name="address" rows="3" placeholder="Flat, Street, City, Pincode" required></textarea>
+                </div>
+                <div class="field">
+                    <label for="paymentMethod">Payment</label>
+                    <select id="paymentMethod" name="payment" required>
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="upi">UPI</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="deliverySlot">Delivery slot</label>
+                    <select id="deliverySlot" name="slot" required>
+                        <option value="9-12">9 AM - 12 PM</option>
+                        <option value="12-3">12 PM - 3 PM</option>
+                        <option value="3-6">3 PM - 6 PM</option>
+                        <option value="6-9">6 PM - 9 PM</option>
+                    </select>
+                </div>
+            </div>
+            <footer class="dialog-actions">
+                <button type="button" id="cancelCheckout" class="secondary">Cancel</button>
+                <button type="submit" class="primary">Place order</button>
+            </footer>
+        </form>
+    </dialog>
+
+    <template id="productCardTemplate">
+        <article class="product-card">
+            <div class="image-wrap">
+                <img src="" alt="">
+                <span class="badge">Best Seller</span>
+            </div>
+            <div class="info">
+                <h3 class="name"></h3>
+                <p class="meta"></p>
+                <div class="price-row">
+                    <div class="price"><span class="currency">₹</span><span class="value"></span> <span class="unit"></span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="app.js"></script>
+</body>
 </html>
+
